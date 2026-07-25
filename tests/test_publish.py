@@ -71,6 +71,11 @@ class QuotePathTests(unittest.TestCase):
 class PublishDryRunTests(unittest.TestCase):
     def _run(self, extra_env=None):
         env = os.environ.copy()
+        # Tests run inside GitHub Actions CI inherit real GITHUB_SERVER_URL /
+        # GITHUB_REPOSITORY values for *this* repo -- clear them so the new
+        # git-url default (see GitUrlDefaultTests) doesn't leak in here.
+        env.pop("GITHUB_SERVER_URL", None)
+        env.pop("GITHUB_REPOSITORY", None)
         env.update(
             {
                 "BADGEHUB_API_BASE": "https://badgehub.eu/api/v3",
@@ -130,6 +135,32 @@ class PublishDryRunTests(unittest.TestCase):
         result = self._run({"BADGEHUB_MPK_PATH": FIXTURE_MPK})
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertNotIn("Warning", result.stderr)
+
+    def test_git_url_defaults_to_calling_repo(self):
+        result = self._run(
+            {
+                "GITHUB_SERVER_URL": "https://github.com",
+                "GITHUB_REPOSITORY": "tjorim/bomberboy-mpos",
+            }
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('"git_url": "https://github.com/tjorim/bomberboy-mpos"', result.stdout)
+
+    def test_git_url_omitted_when_no_repo_env(self):
+        result = self._run()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn("git_url", result.stdout)
+
+    def test_explicit_git_url_overrides_repo_env(self):
+        result = self._run(
+            {
+                "GITHUB_SERVER_URL": "https://github.com",
+                "GITHUB_REPOSITORY": "tjorim/bomberboy-mpos",
+                "BADGEHUB_GIT_URL": "https://example.com/fork",
+            }
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('"git_url": "https://example.com/fork"', result.stdout)
 
 
 if __name__ == "__main__":

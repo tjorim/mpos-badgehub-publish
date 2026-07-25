@@ -37,7 +37,11 @@ inputs:
     required: false
     default: ''
   git-url:
-    description: 'Public git URL for the project'
+    description: >
+      Public git URL for the project. Defaults to the calling repository
+      (via GITHUB_SERVER_URL/GITHUB_REPOSITORY, which every GitHub Actions
+      job already has) -- only set this to override, e.g. when publishing
+      from a fork or a different repo than the canonical source.
     required: false
     default: ''
   icon:

@@ -131,6 +131,16 @@ def build_metadata(app_dir):
         metadata["categories"] = [c.strip() for c in categories.split(",") if c.strip()]
 
     git_url = os.environ.get("BADGEHUB_GIT_URL", "")
+    if not git_url:
+        # No explicit git-url input -- default to the calling repo. GitHub
+        # Actions sets GITHUB_SERVER_URL/GITHUB_REPOSITORY on every job step
+        # (including composite action steps), so callers on github.com get
+        # this for free without adding a redundant input for something the
+        # runner already knows.
+        server_url = os.environ.get("GITHUB_SERVER_URL", "")
+        repository = os.environ.get("GITHUB_REPOSITORY", "")
+        if server_url and repository:
+            git_url = f"{server_url}/{repository}"
     if git_url:
         metadata["git_url"] = git_url
 

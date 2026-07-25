@@ -40,6 +40,11 @@ is exactly one place those live. Only BadgeHub-specific fields that have no
 list (`categories`, `badges`, `license-type`, `git-url`, `icon`, `api-base`,
 `mpk-path`).
 
+`git-url` normally needs no input at all: it defaults to the calling
+repository via `GITHUB_SERVER_URL`/`GITHUB_REPOSITORY`, which every GitHub
+Actions job already has. Set it explicitly only to override that (e.g.
+publishing from a fork or mirror).
+
 ### Why `mpk-path`
 
 BadgeHub doesn't bundle a `.mpk` for you server-side. The on-device
