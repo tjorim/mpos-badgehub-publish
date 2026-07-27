@@ -11,13 +11,9 @@ jobs:
   update-major-tag:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-
-      - name: Move major version tag to this release
-        run: |
-          TAG="${{ github.event.release.tag_name }}"
-          MAJOR="${TAG%%.*}"
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag -fa "$MAJOR" -m "Point $MAJOR at $TAG"
-          git push origin "$MAJOR" --force
+      # actions/publish-action has no tagged releases yet (alpha, internal-use
+      # disclaimer) -- pinned to a commit SHA rather than a floating branch.
+      - name: Update the major tag
+        uses: actions/publish-action@f7054ee0e452c088e99b7dbc53e96b34c2d55c1b
+        with:
+          source-tag: ${{ github.event.release.tag_name }}
