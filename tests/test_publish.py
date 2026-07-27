@@ -13,6 +13,14 @@ sys.path.insert(0, ROOT)
 import publish  # noqa: E402
 
 
+class ApiCompatibilityTests(unittest.TestCase):
+    def test_publisher_does_not_use_badge_registration_ping_as_health_check(self):
+        with open(SCRIPT, encoding="utf-8") as handle:
+            source = handle.read()
+
+        self.assertNotIn('f"{api_base}/ping"', source)
+
+
 class WaitForRevisionAdvanceTests(unittest.TestCase):
     # BadgeHub's publish endpoint returns 204 before its public
     # revision-check endpoint necessarily reflects it (confirmed on the

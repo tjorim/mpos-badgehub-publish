@@ -213,15 +213,6 @@ def main():
     token = os.environ["BADGEHUB_API_TOKEN"]
     app_dir = os.environ["BADGEHUB_APP_DIR"]
 
-    if not DRY_RUN:
-        ping = urllib.request.Request(
-            f"{api_base}/ping", headers={"User-Agent": USER_AGENT}, method="GET"
-        )
-        try:
-            urllib.request.urlopen(ping, timeout=30)
-        except Exception as error:
-            fail("BadgeHub API unreachable", type(error).__name__, str(error).encode())
-
     previous_revision = get_latest_revision(api_base, slug)
 
     def upload_file(full_path, rel_path):
