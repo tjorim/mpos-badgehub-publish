@@ -14,6 +14,6 @@ jobs:
       # actions/publish-action has no tagged releases yet (alpha, internal-use
       # disclaimer) -- pinned to a commit SHA rather than a floating branch.
       - name: Update the major tag
-        uses: actions/publish-action@f7054ee0e452c088e99b7dbc53e96b34c2d55c1b
+        uses: actions/publish-action@29899604937b8a74f3f67c690f5d74eb52b7c1e4
         with:
           source-tag: ${{ github.event.release.tag_name }}
